@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect to Wi-Fi</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const ssid = "Lord Voldemodem"; 
+            const password = "AvadaKedavra@1231"; 
+            const qrContainer = document.getElementById("qr-code");
+            const wifiUri = `WIFI:T:WPA;S:${ssid};P:${password};;`;
+
+            // Generate the QR Code
+            QRCode.toCanvas(qrContainer, wifiUri, { width: 256 }, (error) => {
+                if (error) console.error(error);
+                else console.log("QR code generated successfully.");
+            });
+
+            qrContainer.addEventListener("click", () => {
+                alert(`To connect manually:\nSSID: ${ssid}\nPassword: ${password}`);
+            });
+
+            // Check for online status
+            const offlineMessage = document.getElementById("offline-message");
+            const checkConnectivity = () => {
+                if (!navigator.onLine) {
+                    offlineMessage.style.display = "block";
+                    qrContainer.style.display = "none";
+                } else {
+                    offlineMessage.style.display = "none";
+                    qrContainer.style.display = "block";
+                }
+            };
+
+            window.addEventListener("online", checkConnectivity);
+            window.addEventListener("offline", checkConnectivity);
+            checkConnectivity(); // Initial check
+        });
+    </script>
+    <script>
+        // Responsive styles
+        const styles = `
+            body {
+                font-family: Arial, sans-serif;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                margin: 0;
+                height: 100vh;
+                background-color: #f9f9f9;
+                text-align: center;
+            }
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            canvas {
+                cursor: pointer;
+            }
+            #offline-message {
+                display: none;
+                color: #d9534f;
+                font-size: 1.2rem;
+            }
+        `;
+        const styleTag = document.createElement("style");
+        styleTag.innerHTML = styles;
+        document.head.appendChild(styleTag);
+    </script>
+</head>
+<body>
+    <h1>Tap the QR Code to Connect to Wi-Fi</h1>
+    <canvas id="qr-code"></canvas>
+    <div id="offline-message">
+        You are offline.<br>
+        Wi-Fi SSID: <strong>YourWiFiSSID</strong><br>
+        Password: <strong>YourWiFiPassword</strong>
+    </div>
+</body>
+</html>
